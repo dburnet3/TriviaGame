@@ -1,11 +1,9 @@
 
-
-
 $(document).ready(function () {
 
     $("#timer").hide();
     $("#begin_Game").on('click', cultureTrp.startGame);
-    $(document).on('click', '.option', cultureTrp.guessChecker);
+    $(document).on('click', '#answer', cultureTrp.guessChecker);
 
 })
 
@@ -58,8 +56,8 @@ var cultureTrp = {
 
     },
     nextQuestion: function () {
-        $('#results').hide();
-        $('#selections').show();
+        // $('#results').hide();
+        $('#answer').show();
 
         cultureTrp.timer = 10;
         $('#timer').text(cultureTrp.timer);
@@ -73,8 +71,8 @@ var cultureTrp = {
 
         var potentialAnswer = Object.values(cultureTrp.options)[cultureTrp.currentSet];
 
-        $.each(potentialAnswer, function (index, key) {
-            $('#selections').html('<button class="selections btn btn-info btn-lg">' + key + '</button>');
+        $.each(potentialAnswer, function (cultureTrp, options) {
+            $('#answer').append($('<button class="selections btn btn-info btn-lg">' + options + '</button>'));
 
 
         })
@@ -85,6 +83,7 @@ var cultureTrp = {
         if (cultureTrp.timer > -1 && cultureTrp.currentSet < Object.keys(cultureTrp.questions).length) {
             $('#timer').text(cultureTrp.timer);
             cultureTrp.timer--;
+            cultureTrp.unanswered++;
             if (cultureTrp.timer === 4) {
                 $('#timer').addClass('last-seconds');
 
@@ -102,6 +101,7 @@ var cultureTrp = {
                 .html('<h3>Thank you for playing!</h3>' +
                     '<p>Correct: ' + cultureTrp.correct + '</p>' +
                     '<p>Incorrect: ' + cultureTrp.incorrect + '</p>' +
+                    '<p>Unanswered: ' + cultureTrp.unanswered + '</p>' +
                     '<p>Please play again!</p>');
 
             $('#trivia_questions').hide();
@@ -118,20 +118,19 @@ var cultureTrp = {
         var currentAnswer = Object.values(cultureTrp.answers)[cultureTrp.currentSet];
 
         if ($(this).text() === currentAnswer) {
-            $(this).addClass('btn-success').removeClass('btn-info');
 
             cultureTrp.correct++;
             clearInterval(cultureTrp.timerId);
             resultId = setTimeout(cultureTrp.guessResult, 1000);
+            $('#results').html('<h3>Correct!</h3>');
 
         }
         else {
-            $(this).addClass('btn-danger').removeClass('btn-info');
 
             cultureTrp.incorrect++;
             clearInterval(cultureTrp.timerId);
             resultId = setTimeout(cultureTrp.guessResult, 1000);
-            $('#results').html('<h3>Better luck next time! ' + currentAnswer + '</h3>');
+
         }
 
     },
@@ -139,8 +138,9 @@ var cultureTrp = {
 
         cultureTrp.currentSet++;
 
-        $('#trivia_questions').remove();
+        // $('#trivia_questions').remove();
         $('#results').remove();
+        $('#answer').html('');
 
         cultureTrp.nextQuestion();
 

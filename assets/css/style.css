@@ -62,7 +62,7 @@ h2{
     font-family:'EB Garamond', serif;
 }
 #questions{
-    display: none;
+    /* display: none; */
 }
 #timer{
     display:none;
